@@ -5,6 +5,9 @@ import ProjectPresentation from "@/app/components/ProjectPresentation";
 
 const images = [
   { src: "/projects/postcraft/project_slide_01.png", alt: "Postcraft" },
+  { src: "/projects/postcraft/project_slide_02.png", alt: "Postcraft" },
+  { src: "/projects/postcraft/project_slide_03.png", alt: "Postcraft" },
+  { src: "/projects/postcraft/project_slide_04.png", alt: "Postcraft" }
 ];
 export default function Postcraft() {
     return (
