@@ -16,7 +16,7 @@ export default function Mailru() {
       <section className="flex flex-col gap-5 px-3 md:px-6 max-w-[1920px] mx-auto">
         <SplitText text="Mail.ru" className="text-3xl md:text-6xl font-bold" />
         <AnimatedLine />
-        <ProjectInfo roles="Branding" description="Mail.ru is a platform for creating and managing digital products. It allows you to create and manage your digital products in one place." />
+        <ProjectInfo roles="Branding, Digital" description="As part of a closed competition, our team developed a design concept for Mail.ru. The project focused on modernizing the visual identity." />
         <ProjectPresentation items={images} />
       </section>
     );

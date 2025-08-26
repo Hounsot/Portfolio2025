@@ -17,7 +17,7 @@ export default function PikHR() {
     <section className="flex flex-col gap-5 px-3 md:px-6 max-w-[1920px] mx-auto">
       <SplitText text="Pik HR" className="text-3xl md:text-6xl font-bold" />
       <AnimatedLine />
-      <ProjectInfo roles="UI/UX, Communication" description="Pik HR is a platform for creating and managing digital products. It allows you to create and manage your digital products in one place." />
+      <ProjectInfo roles="UI/UX, Communication" description="A unified design system for numerous PIK units, ensuring consistent hr/brand communication across the entire company ecosystem." />
       <ProjectPresentation items={images} />
     </section>
 );

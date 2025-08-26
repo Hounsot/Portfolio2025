@@ -24,7 +24,7 @@ export default function ADC() {
       <section className="flex flex-col gap-5 px-3 md:px-6 max-w-[1920px] mx-auto">
       <SplitText text="ADC community" className="text-3xl md:text-6xl font-bold" />
       <AnimatedLine />
-      <ProjectInfo roles="Branding, UI/UX, Dev, Motion" description="ADC community is a platform for creating and managing digital products. It allows you to create and manage your digital products in one place." />
+      <ProjectInfo roles="Branding, UI/UX, Dev, Motion" description="ADC is a community for young designers and developers with unique offers and opportunities to find connections in creative industries." />
       <ProjectPresentation items={images} />
       </section>
     );

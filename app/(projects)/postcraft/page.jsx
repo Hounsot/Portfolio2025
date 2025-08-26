@@ -14,7 +14,7 @@ export default function Postcraft() {
       <section className="flex flex-col gap-5 px-3 md:px-6 max-w-[1920px] mx-auto">
         <SplitText text="Postcraft" className="text-3xl md:text-6xl font-bold" />
         <AnimatedLine />
-        <ProjectInfo roles="UI/UX, Dev, Management" description="Postcraft is a platform for creating and managing digital products. It allows you to create and manage your digital products in one place." />
+        <ProjectInfo roles="UI/UX, Dev, Management" description="Figma plugin that converts autolayout frames to email HTML code. Used by multiple companies, achieving up to 72X productivity improvements." />
         <ProjectPresentation items={images} />
       </section>
     );

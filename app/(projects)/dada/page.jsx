@@ -21,7 +21,7 @@ export default function Dada() {
       <section className="flex flex-col gap-5 px-3 md:px-6 max-w-[1920px] mx-auto">
         <SplitText text="Neo-Dada Manifesto" className="text-3xl md:text-6xl font-bold" />
         <AnimatedLine />
-        <ProjectInfo roles="Motion, Creative coding" description="Neo-Dada Manifesto is a platform for creating and managing digital products. It allows you to create and manage your digital products in one place." />
+        <ProjectInfo roles="Motion, Creative coding" description="Freedom: Dada Dada Dada, a roaring of tense colors, and interlacing of opposites and of all contradictions, grotesques, inconsistencies: LIFE" />
         <ProjectPresentation items={images} />
       </section>
     );

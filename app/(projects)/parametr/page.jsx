@@ -27,7 +27,7 @@ export default function Parametr() {
     <section className="flex flex-col gap-5 px-3 md:px-6 max-w-[1920px] mx-auto">
       <SplitText text="Parametr website" className="text-3xl md:text-6xl font-bold" />
       <AnimatedLine />
-      <ProjectInfo roles="UI/UX, Communication" description="Parametr is a platform for creating and managing digital products. It allows you to create and manage your digital products in one place." />
+      <ProjectInfo roles="UI/UX, Management" description="Brutal and functional website for PIK's new company building industrial parks." />
       <ProjectPresentation items={images} />
     </section>
 );

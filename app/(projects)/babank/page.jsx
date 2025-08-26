@@ -24,7 +24,7 @@ export default function Babank() {
       <section className="flex flex-col gap-5 px-3 md:px-6 max-w-[1920px] mx-auto">
         <SplitText text="Babank" className="text-3xl md:text-6xl font-bold" />
         <AnimatedLine />
-        <ProjectInfo roles="Branding, UI/UX, Dev, Motion" description="Babank is a platform for creating and managing digital products. It allows you to create and manage your digital products in one place." />
+        <ProjectInfo roles="UI/UX, Digital" description="Award-winning multibanking app concept designed for VTB hackathon. Simplified financial management by consolidating multiple bank accounts into a single, intuitive interface." />
         <ProjectPresentation items={images} />
       </section>
     );

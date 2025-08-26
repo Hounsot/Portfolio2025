@@ -5,7 +5,7 @@ export const metadata = {
   title: "Matvey Vasilyev — Design portfolio",
   description: "Matvey Vasilyev — Design portfolio",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/Favicon.svg",
   },
 };
 

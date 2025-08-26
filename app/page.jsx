@@ -6,7 +6,7 @@ export default function Home() {
     <section className="flex flex-col gap-5 px-3 md:px-6 max-w-[1920px] mx-auto">
       <SplitText text="Projects" className="text-3xl md:text-6xl font-bold" />
       <div id="profiles" className="flex flex-row flex-wrap gap-5 w-fill h-fit">
-        <Project href="/parametr" src="/ParametrCover.png" title="Parametr website" subtitle="UI/UX, Communication" />
+        <Project href="/parametr" src="/ParametrCover.png" title="Parametr website" subtitle="UI/UX, Management" />
         <Project href="/adc" src="/ADCCover.png" title="ADC community" subtitle="Branding, UI/UX, Dev, Motion" />
         <Project href="/postcraft" src="/PostcraftCover.png" title="Postcraft — figma HTML generator" subtitle="UI/UX, Dev, Management" />
         <Project href="/babank" src="/BaBankCover.png" title="BaBank" subtitle="UI/UX, Digital" />
