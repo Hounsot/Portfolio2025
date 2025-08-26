@@ -8,6 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --breakpoint-2xs: 390px;
 }
 
 @media (prefers-color-scheme: dark) {

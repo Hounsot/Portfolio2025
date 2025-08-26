@@ -1,6 +1,6 @@
 export default function Header({ children }) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex bg-zinc-950 justify-between items-center px-3 md:px-6 h-16">
+    <header className="fixed top-0 left-0 right-0 z-50 flex bg-zinc-950 justify-between items-center px-3 md:px-6 h-16 max-w-[1920px] mx-auto">
         <a className="flex flex-col text-sm relative" href="/">
             <p>
                 Matvey Vasilyev
@@ -10,7 +10,7 @@ export default function Header({ children }) {
             </p>
         </a>
         <div className="flex gap-4">
-        <a className="flex flex-col text-sm relative" href="/works">
+        <a className="flex flex-col text-sm relative" href="/">
             <p>
                 Works
             </p>
