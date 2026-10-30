@@ -109,6 +109,55 @@
   animation: fade-in 0.45s ease both;
 }
 
+/* Desktop reel navigation: both cases travel through the same clipped viewport. */
+@keyframes case-reel-out-next {
+  to { transform: translateY(-100%); }
+}
+@keyframes case-reel-in-next {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes case-reel-out-prev {
+  to { transform: translateY(100%); }
+}
+@keyframes case-reel-in-prev {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+.case-reel-out-next, .case-reel-in-next,
+.case-reel-out-prev, .case-reel-in-prev {
+  animation-duration: 560ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+  will-change: transform;
+}
+.case-reel-out-next { animation-name: case-reel-out-next; }
+.case-reel-in-next { animation-name: case-reel-in-next; }
+.case-reel-out-prev { animation-name: case-reel-out-prev; }
+.case-reel-in-prev { animation-name: case-reel-in-prev; }
+
+@keyframes case-details-out {
+  to { opacity: 0; transform: translateY(var(--details-exit)); }
+}
+@keyframes case-details-in {
+  from { opacity: 0; transform: translateY(var(--details-enter)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.case-details-out-next, .case-details-in-next {
+  --details-exit: -12px;
+  --details-enter: 18px;
+}
+.case-details-out-prev, .case-details-in-prev {
+  --details-exit: 12px;
+  --details-enter: -18px;
+}
+.case-details-out-next, .case-details-out-prev {
+  animation: case-details-out 240ms ease both;
+}
+.case-details-in-next, .case-details-in-prev {
+  animation: case-details-in 460ms 100ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+}
+
 /* mobile case details panel */
 @keyframes panel-in {
   from {

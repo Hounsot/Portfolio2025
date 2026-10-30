@@ -59,7 +59,7 @@ export default function MobileTabBar() {
         <span className="relative">
           {pulse && <span aria-hidden className="island-ring absolute inset-0 rounded-full border border-white/60" />}
           <img
-            src="/me-avatar.webp"
+            src="/me-avatar.jpg"
             alt=""
             className={`rounded-full object-cover ring-1 ring-white/25 transition-all duration-500 ${compact ? 'size-7' : 'size-8'}`}
           />

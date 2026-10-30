@@ -89,7 +89,7 @@ export default function Island() {
         className={`relative flex items-center gap-3 rounded-full bg-zinc-950/60 backdrop-blur-xl backdrop-saturate-150 border pl-1 py-1 transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.35)] ${expanded ? 'border-white/20 bg-zinc-900/80' : 'border-white/[0.08]'} ${scrolled ? 'pr-2' : 'pr-2.5'}`}
       >
         <span className="relative shrink-0">
-          <img src="/me-avatar.webp" alt="" className={`rounded-full object-cover transition-all duration-300 ${scrolled ? 'size-7' : 'size-8'}`} />
+          <img src="/me-avatar.jpg" alt="" className={`rounded-full object-cover transition-all duration-300 ${scrolled ? 'size-7' : 'size-8'}`} />
           <span className="absolute -bottom-px -right-px size-2.5 rounded-full bg-emerald-400 ring-2 ring-zinc-950" />
         </span>
         <span className="text-left leading-tight">

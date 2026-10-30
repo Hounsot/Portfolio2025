@@ -22,7 +22,7 @@ function Routes() {
     document.title = project ? `${project.title} — ${t('name')}` : t('docTitle')
   }, [project, t])
 
-  if (project) return compact ? <CaseMobile key={project.slug} project={project} /> : <Case key={project.slug} project={project} />
+  if (project) return compact ? <CaseMobile key={project.slug} project={project} /> : <Case project={project} />
   if (path === '/wall') return <Wall />
   return <Cases />
 }

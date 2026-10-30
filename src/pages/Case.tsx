@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { ArrowRight, ChevronDown, ChevronUp, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { projects, reelFrames, type Project } from '@/data/projects'
 import Reel from '@/components/Reel'
@@ -16,12 +16,19 @@ export default function Case({ project: p }: { project: Project }) {
   const backTo = sessionStorage.getItem('mv-from') === '/wall' ? '/wall' : '/'
   const { navigate } = useRouter()
   const { lang, t, loc } = useLang()
-  const copy = loc(p)
   const frames = useMemo(() => reelFrames(p), [p])
-  const blocks = useMemo(() => annotate(buildBlocks(p.media, lang, t('caption')), frames, t('overview')), [p, frames, lang])
+  const currentBlocks = useMemo(() => annotate(buildBlocks(p.media, lang, t('caption')), frames, t('overview')), [p, frames, lang])
   const scroller = useRef<HTMLDivElement>(null)
   const [focused, setFocused] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
+  const [transition, setTransition] = useState<{ project: Project; direction: 'next' | 'prev' } | null>(null)
+  const switching = useRef(false)
+  useLayoutEffect(() => {
+    scroller.current?.scrollTo(0, 0)
+    setTransition(null)
+    setPreview(null)
+    switching.current = false
+  }, [p.slug])
   const { like } = useLike(p.slug)
   const { open } = useContact()
 
@@ -29,28 +36,31 @@ export default function Case({ project: p }: { project: Project }) {
   const idx = list.findIndex((x) => x.slug === p.slug)
   const next = list[(idx + 1) % list.length]
   const prev = list[(idx - 1 + list.length) % list.length]
+  // Keep the incoming keyed layers mounted when their project becomes active.
+  const moving = transition && transition.project.slug !== p.slug ? transition : null
+  const layers = moving ? [p, moving.project] : [p]
 
-  // Wheel anywhere on the page drives the reading column.
-  const onWheel = (e: React.WheelEvent) => {
-    if (document.querySelector('dialog[open]')) return
-    if (!scroller.current?.contains(e.target as Node)) scroller.current?.scrollBy({ top: e.deltaY })
+  const switchCase = (project: Project, direction: 'next' | 'prev') => {
+    if (switching.current) return
+    switching.current = true
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      navigate(`/work/${project.slug}`)
+      return
+    }
+    setTransition({ project, direction })
   }
 
-  return (
-    <div onWheel={onWheel} className="h-screen overflow-hidden grid grid-cols-[auto_minmax(300px,380px)] justify-center gap-12 px-24" style={focused ? { gridTemplateColumns: 'minmax(0,min(calc((100vh - 160px) * 9 / 16 + 428px),calc(100vw - 320px)))' } : undefined}>
-      {/* reel, actions overlaid like on mobile */}
-      <div className={focused ? "group fixed top-1/2 -translate-y-1/2 left-6 z-40 w-28 aspect-[9/16] rounded-xl shadow-2xl ring-1 ring-white/15" : "pt-20 pb-20"}>
-        <div className={`relative h-full aspect-[9/16] ${focused ? 'rounded-xl' : ''}`}>
+  const renderReel = (project: Project) => <>
           <Reel
-            key={p.slug}
+            key={project.slug}
             className="size-full"
-            frames={frames}
-            video={p.reel}
+            frames={project === p ? frames : reelFrames(project)}
+            video={project.reel}
             soundControl
             compactControls={focused}
             inheritRadius={focused}
-            onDoubleLike={like}
-            overlay={focused ? undefined : <ReelOverlay captionClassName="pr-16" caption={<b>{p.title}</b>} />}
+            onDoubleLike={project === p ? like : undefined}
+            overlay={focused ? undefined : <ReelOverlay captionClassName="pr-16" caption={<b>{project.title}</b>} />}
           />
           {!focused && <Link
             to={backTo}
@@ -62,41 +72,24 @@ export default function Case({ project: p }: { project: Project }) {
           </Link>}
           {focused && <button type="button" onClick={() => setFocused(false)} aria-label={t('restoreReel')} title={t('restoreReel')} className="absolute inset-0 z-10 rounded-xl grid place-items-center bg-black/0 hover:bg-black/15 focus-visible:outline-2 focus-visible:outline-white"><PanelLeftOpen size={24} className="text-white opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity drop-shadow" /></button>}
           {!focused && <div className="absolute right-3 bottom-7 z-10">
-            <ActionRail overlay slug={p.slug} url={`/work/${p.slug}`} />
+            <ActionRail overlay slug={project.slug} url={`/work/${project.slug}`} />
           </div>}
-        </div>
-      </div>
+  </>
 
-      {/* previous / next case — right edge, vertically centred */}
-      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2">
-        {[
-          { to: prev, I: ChevronUp, label: t('prevCase') },
-          { to: next, I: ChevronDown, label: t('nextCase') },
-        ].map(({ to, I, label }) => (
-          <button
-            key={label}
-            onClick={() => navigate(`/work/${to.slug}`)}
-            title={`${label}: ${to.title}`}
-            aria-label={label}
-            className="size-12 rounded-full bg-white/5 border border-white/10 grid place-items-center hover:bg-white/10 transition"
-          >
-            <I size={20} />
-          </button>
-        ))}
-      </div>
-
-      {/* reading column */}
-      <div ref={scroller} className="h-screen overflow-y-auto no-scrollbar pt-20 pb-20 min-w-0">
+  const renderDetails = (project: Project) => {
+    const copy = loc(project)
+    const blocks = project === p ? currentBlocks : annotate(buildBlocks(project.media, lang, t('caption')), reelFrames(project), t('overview'))
+    return <>
         <section>
           <div className="flex items-start justify-between gap-4">
-            <h1 className="text-2xl font-semibold tracking-[-0.03em]">{p.title}</h1>
+            <h1 className="text-2xl font-semibold tracking-[-0.03em]">{project.title}</h1>
             <button type="button" aria-label={focused ? t('restoreReel') : t('focusCase')} title={focused ? t('restoreReel') : t('focusCase')} aria-pressed={focused} onClick={() => setFocused((value) => !value)} className="shrink-0 flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-zinc-400 hover:text-zinc-50 hover:bg-white/10 transition-colors">
               {focused ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}
               {focused ? t('splitView') : t('focus')}
             </button>
           </div>
           <span className="mt-1 block mono text-[11px] uppercase tracking-widest text-zinc-500">
-            {p.year} · {p.roles.join(' · ')}
+            {project.year} · {project.roles.join(' · ')}
           </span>
           <p className="mt-4 text-sm leading-relaxed text-zinc-300">{copy.summary}</p>
 
@@ -123,7 +116,7 @@ export default function Case({ project: p }: { project: Project }) {
 
         <div className="mt-12 flex flex-col gap-10">
           {blocks.map(({ block: b }, i) => (
-            <section key={i}>
+            <section key={`${project.slug}-${i}`}>
               <Reveal>
                 {b.type === 'note' ? (
                   <div className="pt-2">
@@ -150,6 +143,66 @@ export default function Case({ project: p }: { project: Project }) {
             {t('ctaAction')} <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
+    </>
+  }
+
+  // Wheel anywhere on the page drives the reading column.
+  const onWheel = (e: React.WheelEvent) => {
+    if (document.querySelector('dialog[open]')) return
+    if (!scroller.current?.contains(e.target as Node)) scroller.current?.scrollBy({ top: e.deltaY })
+  }
+
+  return (
+    <div onWheel={onWheel} className="h-screen overflow-hidden grid grid-cols-[auto_minmax(300px,380px)] justify-center gap-12 px-24" style={focused ? { gridTemplateColumns: 'minmax(0,min(calc((100vh - 160px) * 9 / 16 + 428px),calc(100vw - 320px)))' } : undefined}>
+      {/* reel, actions overlaid like on mobile */}
+      <div className={focused ? "group fixed top-1/2 -translate-y-1/2 left-6 z-40 w-28 aspect-[9/16] rounded-xl shadow-2xl ring-1 ring-white/15" : "pt-20 pb-20"}>
+        <div className={`relative h-full aspect-[9/16] overflow-hidden ${focused ? 'rounded-xl' : 'rounded-[28px]'}`}>
+        {layers.map((project) => <div
+          key={project.slug}
+          data-reel-project={project.slug}
+          className={`absolute inset-0 rounded-[inherit] ${moving ? `pointer-events-none case-reel-${project === p ? 'out' : 'in'}-${moving.direction}` : ''}`}
+          onAnimationEnd={(event) => {
+            if (moving && project !== p && event.target === event.currentTarget) {
+              navigate(`/work/${project.slug}`, { scroll: false })
+            }
+          }}
+        >
+          {renderReel(project)}
+        </div>)}
+        </div>
+      </div>
+
+      {/* previous / next case — right edge, vertically centred */}
+      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2">
+        {[
+          { to: prev, direction: 'prev' as const, I: ChevronUp, label: t('prevCase') },
+          { to: next, direction: 'next' as const, I: ChevronDown, label: t('nextCase') },
+        ].map(({ to, direction, I, label }) => (
+          <button
+            key={label}
+            onClick={() => switchCase(to, direction)}
+            disabled={!!transition}
+            title={`${label}: ${to.title}`}
+            aria-label={label}
+            className="size-12 rounded-full bg-white/5 border border-white/10 grid place-items-center hover:bg-white/10 transition"
+          >
+            <I size={20} />
+          </button>
+        ))}
+      </div>
+
+      {/* reading column */}
+      <div className="relative h-screen min-w-0 overflow-hidden">
+        {layers.map((project) => <div
+          key={project.slug}
+          data-details-project={project.slug}
+          ref={project === p ? scroller : undefined}
+          aria-hidden={project !== p || undefined}
+          inert={project !== p || undefined}
+          className={`absolute inset-0 overflow-y-auto no-scrollbar pt-20 pb-20 min-w-0 ${moving ? `pointer-events-none case-details-${project === p ? 'out' : 'in'}-${moving.direction}` : ''}`}
+        >
+          {renderDetails(project)}
+        </div>)}
       </div>
       {preview && <ImagePreview src={preview} project={p} onClose={() => setPreview(null)} />}
     </div>

@@ -9,7 +9,13 @@ export const useContact = () => useContext(Ctx)
 export function ContactProvider({ children }: { children: ReactNode }) {
   const [isOpen, setOpen] = useState(false)
   const [copied, setCopied] = useState(false)
-  const { t } = useLang()
+  const { t, lang } = useLang()
+  const employmentDate = (value: string) => new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'ru-RU', {
+    day: value.length === 10 ? 'numeric' : undefined,
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${value.length === 7 ? `${value}-01` : value}T00:00:00Z`))
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
@@ -37,31 +43,49 @@ export function ContactProvider({ children }: { children: ReactNode }) {
         <div
           role="dialog"
           aria-label="Contact"
-          className={`relative w-full sm:w-[380px] rounded-t-[28px] sm:rounded-[24px] bg-zinc-50 text-zinc-950 px-6 pt-3 sm:p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5 shadow-2xl transition-all duration-300 ease-[cubic-bezier(.2,.9,.3,1.15)] ${isOpen ? 'opacity-100 translate-y-0 sm:scale-100' : 'max-sm:translate-y-full sm:opacity-0 sm:scale-95 sm:translate-y-2'}`}
+          className={`relative w-full sm:w-[380px] max-h-[90dvh] overflow-y-auto rounded-t-[28px] sm:rounded-[24px] bg-zinc-50 text-zinc-950 px-6 pt-3 sm:p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5 shadow-2xl transition-all duration-300 ease-[cubic-bezier(.2,.9,.3,1.15)] ${isOpen ? 'opacity-100 translate-y-0 sm:scale-100' : 'max-sm:translate-y-full sm:opacity-0 sm:scale-95 sm:translate-y-2'}`}
         >
           {/* grabber (phones) */}
           <div className="sm:hidden mx-auto mb-5 h-1 w-10 rounded-full bg-zinc-300" />
 
-          <div className="flex items-center gap-3 max-sm:gap-4">
-            <div className="relative shrink-0">
-              <img src="/me-avatar.webp" alt="" className="size-16 sm:size-11 rounded-full object-cover" />
-              <span className="absolute bottom-0 right-0 size-4 sm:size-3 rounded-full bg-emerald-500 ring-2 ring-zinc-50" />
+          <div className="flex items-center gap-4">
+            <div className="shrink-0">
+              <img src="/me-avatar.jpg" alt={t('name')} className="size-20 rounded-full object-cover" />
             </div>
             <div className="flex-1 leading-tight">
-              <div className="text-xl sm:text-base font-semibold sm:font-medium tracking-tight">{t('name')}</div>
-              <div className="mt-0.5 text-[13px] sm:text-xs text-zinc-500">{t('statusLine')}</div>
+              <div className="text-xl font-medium tracking-tight">{t('name')}</div>
+              <div className="mt-1 text-[13px] text-zinc-500">{t('statusLine')}</div>
             </div>
             <button
               onClick={() => setOpen(false)}
-              className="size-9 sm:size-8 self-start rounded-full grid place-items-center text-zinc-500 bg-zinc-200/60 sm:bg-transparent hover:bg-zinc-200 hover:text-zinc-950 transition-colors"
+              className="absolute right-3 top-3 size-8 rounded-full grid place-items-center text-zinc-500 hover:bg-zinc-200 hover:text-zinc-950 transition-colors"
               aria-label={t('close')}
             >
               <X size={16} />
             </button>
           </div>
 
-          <h2 className="sm:hidden mt-7 text-[32px] font-semibold leading-[1.02] tracking-[-0.04em]">{t('contactHeadline')}</h2>
-          <p className="mt-3 sm:mt-4 text-[15px] sm:text-sm text-zinc-600 leading-relaxed">{t('contactBlurb')}</p>
+          <section aria-label={t('aboutMe')} className="mt-5 border-t border-zinc-200 pt-4">
+            <dl className="space-y-4 text-sm">
+              {[
+                { company: t('bankName'), role: t('experienceBank'), start: '2025-11-06', end: null },
+                { company: t('universityName'), role: t('experienceTeaching'), start: '2025-09-01', end: null },
+                { company: 'PIK', role: t('experiencePik'), start: '2024-07', end: '2025-11' },
+                { company: 'Samolet', role: t('experienceSamolet'), start: '2023-01', end: '2024-07' },
+              ].map(({ company, role, start, end }) => <div key={company}>
+                <dt className="flex items-center justify-between gap-3 font-medium">
+                  <span>{company}</span>
+                  <span className="shrink-0 text-[11px] font-normal tabular-nums text-zinc-500">
+                    <time dateTime={start}>{employmentDate(start)}</time>
+                    {' — '}
+                    {end ? <time dateTime={end}>{employmentDate(end)}</time> : t('present')}
+                  </span>
+                </dt>
+                <dd className="mt-0.5 text-xs text-zinc-500">{role}</dd>
+              </div>)}
+            </dl>
+            <p className="mt-4 text-xs leading-relaxed text-zinc-600"><span className="text-zinc-500">{t('selectedClients')} </span>{t('clientNames')}</p>
+          </section>
 
           <div className="mt-6 sm:mt-4 flex flex-col gap-2 sm:gap-1.5">
             <a
