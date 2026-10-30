@@ -1,0 +1,13 @@
+{
+  "title": "Matvey Vasilyev — Product designer",
+  "language": "en",
+  "icons": { "icon": "/Favicon.svg" },
+  "description": "An interactive portfolio for a product designer, pairing looping feature demos with project details to showcase work and make getting in touch easy.",
+  "robots": {
+    "index": true
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
