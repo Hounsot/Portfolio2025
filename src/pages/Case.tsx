@@ -7,12 +7,13 @@ import ActionRail from '@/components/ActionRail'
 import ImagePreview from '@/components/ImagePreview'
 import { annotate, buildBlocks, MediaView, Reveal } from '@/components/caseBlocks'
 import { Link, useRouter } from '@/lib/router'
-import { useLike } from '@/lib/likes'
+import { useCaseView, useLike } from '@/lib/likes'
 import { useLang } from '@/lib/i18n'
 import { useContact } from '@/components/Contact'
 
 /** Desktop case page — centred reel and compact reading column. */
 export default function Case({ project: p }: { project: Project }) {
+  useCaseView(p.slug)
   const backTo = sessionStorage.getItem('mv-from') === '/wall' ? '/wall' : '/'
   const { navigate } = useRouter()
   const { lang, t, loc } = useLang()

@@ -5,7 +5,7 @@ import Reel from '@/components/Reel'
 import ReelOverlay from '@/components/ReelOverlay'
 import ActionRail from '@/components/ActionRail'
 import { useRouter } from '@/lib/router'
-import { useLike } from '@/lib/likes'
+import { useCaseView, useLike } from '@/lib/likes'
 import { useLang } from '@/lib/i18n'
 import { useMedia } from '@/lib/useMedia'
 import CaseInfoMobile from './CaseInfoMobile'
@@ -31,6 +31,7 @@ function FeedItem({
 }) {
   const { t } = useLang()
   const { like } = useLike(p.slug)
+  useCaseView(p.slug, active)
   return (
     <section
       data-slug={p.slug}

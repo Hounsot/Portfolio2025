@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Heart, Link2, Check, MessageCircle } from 'lucide-react'
-import { useLike } from '@/lib/likes'
+import { compact, useLike } from '@/lib/likes'
 import { useContact } from './Contact'
 import { useLang } from '@/lib/i18n'
 
@@ -10,15 +10,19 @@ function RailButton({
   children,
   active,
   overlay,
+  disabled,
+  ariaLabel,
 }: {
   overlay?: boolean
   onClick?: () => void
   label: string
   children: React.ReactNode
   active?: boolean
+  disabled?: boolean
+  ariaLabel?: string
 }) {
   return (
-    <button onClick={onClick} className="group flex flex-col items-center gap-1.5" aria-label={label}>
+    <button onClick={onClick} disabled={disabled} className="group flex flex-col items-center gap-1.5 disabled:cursor-default" aria-label={ariaLabel ?? label}>
       <span
         className={`${overlay ? 'size-11' : 'size-12'} rounded-full grid place-items-center border transition-all duration-300 group-hover:scale-110 group-active:scale-90 ${active ? 'bg-zinc-50 text-zinc-950 border-zinc-50' : overlay ? 'border-white/15 bg-black/25 backdrop-blur-md text-zinc-50' : 'border-white/10 bg-white/5 text-zinc-50 group-hover:bg-white/10'}`}
       >
@@ -30,7 +34,7 @@ function RailButton({
 }
 
 export default function ActionRail({ slug, url, overlay }: { slug: string; url: string; overlay?: boolean }) {
-  const { liked, count, toggle } = useLike(slug)
+  const { liked, count, toggle, pending, available, error } = useLike(slug)
   const { open } = useContact()
   const { t } = useLang()
   const [copied, setCopied] = useState(false)
@@ -41,9 +45,10 @@ export default function ActionRail({ slug, url, overlay }: { slug: string; url: 
   }
   return (
     <div className={`flex flex-col ${overlay ? 'gap-4' : 'gap-5'}`}>
-      <RailButton overlay={overlay} onClick={toggle} label={String(count)} active={liked}>
+      <RailButton overlay={overlay} onClick={toggle} label={compact(count)} active={liked} disabled={!available || pending || count === null} ariaLabel={!available ? t('likesUnavailable') : t(liked ? 'unlikeCase' : 'likeCase')}>
         <Heart size={20} className={liked ? 'fill-current like-bounce' : ''} />
       </RailButton>
+      {error && <span role="status" className="max-w-24 text-center text-[10px] text-white">{t('likeError')}</span>}
       <RailButton overlay={overlay} onClick={open} label={t('talk')}>
         <MessageCircle size={20} />
       </RailButton>

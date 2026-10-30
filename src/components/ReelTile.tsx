@@ -3,14 +3,14 @@ import { Eye, Heart, Pin } from 'lucide-react'
 import { reelFrames, type Project } from '@/data/projects'
 import Reel from '@/components/Reel'
 import { useRouter } from '@/lib/router'
-import { baseViews, compact, useLike } from '@/lib/likes'
+import { compact, useLike } from '@/lib/likes'
 import { useLang } from '@/lib/i18n'
 import { useMedia } from '@/lib/useMedia'
 
 /** 9:16 case tile: cover at rest, plays the reel on hover. */
 export default function ReelTile({ p, pinned }: { p: Project; pinned?: boolean }) {
   const [hover, setHover] = useState(false)
-  const { count, liked } = useLike(p.slug)
+  const { count, liked, views } = useLike(p.slug)
   const { navigate } = useRouter()
   const { t } = useLang()
   const touch = useMedia('(hover: none)')
@@ -52,14 +52,14 @@ export default function ReelTile({ p, pinned }: { p: Project; pinned?: boolean }
       )}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 p-2.5 sm:p-3.5">
         <div className="text-sm sm:text-base font-medium tracking-tight leading-tight">{p.title}</div>
-        <div className="mt-1.5 flex items-center gap-3 text-xs text-white/80">
+        {!p.comingSoon && <div className="mt-1.5 flex items-center gap-3 text-xs text-white/80">
           <span className="flex items-center gap-1">
-            <Eye size={12} /> {compact(baseViews(p.slug))}
+            <Eye size={12} /> {compact(views)}
           </span>
           <span className="flex items-center gap-1">
-            <Heart size={12} className={liked ? 'fill-current text-rose-400' : ''} /> {count}
+            <Heart size={12} className={liked ? 'fill-current text-rose-400' : ''} /> {compact(count)}
           </span>
-        </div>
+        </div>}
       </div>
     </div>
   )
